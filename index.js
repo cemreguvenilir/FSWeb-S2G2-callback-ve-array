@@ -7,14 +7,22 @@ const { fifaData } = require('./fifa.js')
 	💡 İPUCU: Öncelikle datayı filtrelemek isteyebilirsiniz */
 
 //(a) 2014 Dünya kupası Finali Evsahibi takım ismi (dizide "Home Team Name" anahtarı)
+const final = fifaData.filter(mac => mac.Stage == "Final");
+const final2014 = final.filter(mac => mac.Year == 2014);
+
+console.log(final2014[0]["Home Team Name"]);
 
 //(b) 2014 Dünya kupası Finali Deplasman takım ismi  (dizide "Away Team Name" anahtarı)
+console.log(final2014[0]["Away Team Name"]);
 
 //(c) 2014 Dünya kupası finali Ev sahibi takım golleri (dizide "Home Team Goals" anahtarı)
+console.log(final2014[0]["Home Team Goals"]);
 
 //(d)2014 Dünya kupası finali Deplasman takım golleri  (dizide "Away Team Goals" anahtarı)
+console.log(final2014[0]["Away Team Goals"]);
 
 //(e) 2014 Dünya kupası finali kazananı*/
+console.log(final2014[0]["Win conditions"]);
 
 
 /*  Görev 2: 
@@ -25,11 +33,12 @@ const { fifaData } = require('./fifa.js')
 	💡 İPUCU - verilen data içindeki nesnelerin(objects) "Stage" anahtarına bakmalısınız
 */
 
-function Finaller(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
-}
+function Finaller(fifaData) {
+	const finalmac = fifaData.filter(mac => mac.Stage == "Final");
+	return finalmac
 
+}
+console.log(Finaller(fifaData));
 
 
 /*  Görev 3: 
@@ -39,11 +48,11 @@ function Finaller(/* kodlar buraya */) {
 	3. Finaller data setindeki tüm yılları içeren "years" adındaki diziyi(array) döndürecek
 	*/
 
-function Yillar(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
+function Yillar(fifaData, Finaller) {
+	const years = Finaller(fifaData).map(mac => mac.Year)
+	return years
 }
-
+console.log(Yillar(fifaData, Finaller));
 
 /*  Görev 4: 
 	Bir higher-order fonksiyonunu olan Kazananlar isimli fonksiyona aşağıdakileri uygulayın:  
@@ -53,12 +62,19 @@ function Yillar(/* kodlar buraya */) {
 	💡 İPUCU: Beraberlikler(ties) için şimdilik endişelenmeyin (Detaylı bilgi için README dosyasına bakabilirsiniz.)
 	4. Tüm kazanan ülkelerin isimlerini içeren `kazananlar` adında bir dizi(array) döndürecek(return)  */ 
 
-function Kazananlar(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
-	
+function Kazananlar(fifaData, Finaller) {
+	const kazanan = Finaller(fifaData).map(mac => {
+		if (mac["Home Team Goals"] > mac["Away Team Goals"]) {
+			return mac["Home Team Name"];
+		} else if (mac["Away Team Goals"] > mac["Home Team Goals"]) {
+			return mac["Away Team Name"];
+		} else {
+			return mac["Win conditions"];
+		}
+	})
+	return kazanan
 }
-
+console.log(Kazananlar(fifaData, Finaller));
 
 
 /*  Görev 5: 
@@ -72,13 +88,16 @@ function Kazananlar(/* kodlar buraya */) {
 	💡 İPUCU: her cümlenin adım 4'te belirtilen cümleyle birebir aynı olması gerekmektedir.
 */
 
-function YillaraGoreKazananlar(/* kodlar buraya */) {
-	
-/* kodlar buraya */
-
+function YillaraGoreKazananlar(fifaData, Finaller, Yillar, Kazananlar) {
+	let arr = [];
+	let yil = Yillar(fifaData, Finaller);
+	let ulke = Kazananlar(fifaData, Finaller);
+	for(let i=0; i<yil.length; i++) {
+		 arr.push(yil[i] + " yılında, " + ulke[i] + " dünya kupasını kazandı!");
+	}
+return arr
 }
-
-
+console.log(YillaraGoreKazananlar(fifaData, Finaller, Yillar, Kazananlar));
 /*  Görev 6: 
 	Bir higher order fonksiyonu olan `OrtalamaGolSayisi` isimli fonksiyona aşağıdakileri uygulayın: 
 	1. Görev 2'de yazdığınız `Finaller` fonksiyonunu birinci parametre olarak alacak; 'fifaData' dizisini argüman olarak eklediğinizden emin olun
@@ -93,12 +112,12 @@ function YillaraGoreKazananlar(/* kodlar buraya */) {
 	
 */
 
-function OrtalamaGolSayisi(/* kodlar buraya */) {
+function OrtalamaGolSayisi(Finaller) {
 	
-    /* kodlar buraya */
-	
+    let goller = Finaller.reduce((acc, item) => acc + item["Home Team Goals"] + item["Away Team Goals"], 0)
+	return (goller/Finaller.length).toFixed(2)
 }
-
+console.log(OrtalamaGolSayisi(Finaller(fifaData)));
 
 
 /// EKSTRA ÇALIŞMALAR ///
@@ -109,10 +128,9 @@ function OrtalamaGolSayisi(/* kodlar buraya */) {
 	İpucu: "takım kısaltmaları" (team initials) için datada araştırma yapın!
 İpucu: `.reduce` Kullanın*/
 
-function UlkelerinKazanmaSayilari(/* kodlar buraya */) {
+function UlkelerinKazanmaSayilari(data, takimKisaltmalari) {
 	
-    /* kodlar buraya */
-	
+   
 }
 
 
